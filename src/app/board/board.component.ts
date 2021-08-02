@@ -13,11 +13,35 @@ export interface Tile {
   templateUrl: './board.component.html',
   styleUrls: ['./board.component.scss']
 })
-export class BoardComponent  {
-  tiles: Tile[] = [
-    {text: 'One', cols: 3, rows: 1, color: 'lightblue'},
-    {text: 'Two', cols: 1, rows: 2, color: 'lightgreen'},
-    {text: 'Three', cols: 1, rows: 1, color: 'lightpink'},
-    {text: 'Four', cols: 2, rows: 1, color: '#DDBDF1'},
-  ];
+export class BoardComponent implements OnInit {
+  tiles: Tile[];
+
+  constructor() {
+    this.tiles = []
+
+    for (var num = 1; num <= 36; num++) {
+      let cellColor: string='';
+      if (num <= 10 || (num >= 19 && num <= 28)){
+        if (num % 2 == 1) {
+          cellColor = 'darkred';
+        } else {
+          cellColor = 'black';
+        }
+      } else {
+        if (num % 2 == 1) {
+          cellColor = 'black';
+        } else {
+          cellColor = 'darkred';
+        }
+      }
+
+      this.tiles.push({ text: num.toString(), cols: 1, rows: 1, color: cellColor })
+    }
+
+  }
+
+  ngOnInit(): void {
+
+  }
+
 }

@@ -1,6 +1,6 @@
 <mat-grid-list cols="3" rowHeight="75px" gutterSize=2>
-    <mat-grid-tile matRipple *ngFor="let tile of tiles" [colspan]="tile.cols" [rowspan]="tile.rows"
+    <mat-grid-tile  *ngFor="let tile of tiles" [colspan]="tile.cols" [rowspan]="tile.rows"
         [style.background]="tile.color" >
-        <app-boardcell [label]='tile.text'></app-boardcell>
+        <div class="cell-label"  (click)=placeBet(tile.text)>{{tile.text}}</div>
     </mat-grid-tile>
 </mat-grid-list>

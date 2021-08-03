@@ -44,4 +44,8 @@ export class BoardComponent implements OnInit {
 
   }
 
+  placeBet(cellKey: string): void{
+    console.log(cellKey);
+  }
+
 }

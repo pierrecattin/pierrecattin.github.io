@@ -6,11 +6,13 @@ import {MatGridListModule} from '@angular/material/grid-list';
 
 import { AppComponent } from './app.component';
 import { BoardComponent } from './board/board.component';
+import { BoardcellComponent } from './boardcell/boardcell.component';
 
 @NgModule({
   declarations: [
     AppComponent,
-    BoardComponent
+    BoardComponent,
+    BoardcellComponent
   ],
   imports: [
     BrowserModule,

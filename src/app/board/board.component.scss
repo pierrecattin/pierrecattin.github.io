@@ -1,0 +1,18 @@
+.mat-grid-tile {
+    border: solid 3px white;
+    padding:0px !important;
+    padding-top:0px !important;
+    border-spacing:0px;
+    vertical-align: top;
+    transition: all 0.2s ease-in-out;
+}
+
+.mat-grid-tile:hover {
+    transform: translate(-5px, -5px);
+    z-index: 1;
+  }
+  
+.mat-grid-tile:active {
+    transform:scale(1.1);
+    transition: all 0.01s ease-in-out;
+  }

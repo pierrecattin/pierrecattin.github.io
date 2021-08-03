@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-
+import { BetDialogComponent } from '../bet-dialog/bet-dialog.component';
+import {MatDialog} from '@angular/material/dialog';
 
 export interface Tile {
   color: string;
@@ -44,8 +45,8 @@ export class BoardComponent implements OnInit {
 
   }
 
-  placeBet(cellKey: string): void{
-    console.log(cellKey);
+  async placeBet(cellKey: string): Promise<void>{
+    console.info(cellKey);
   }
 
 }

@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { BetDialogComponent } from '../bet-dialog/bet-dialog.component';
-import {MatDialog} from '@angular/material/dialog';
+import { Bet } from '../logic/bet/bet';
+import { Dealer } from '../logic/dealer/dealer';
 
 export interface Tile {
   color: string;
@@ -16,6 +17,7 @@ export interface Tile {
 })
 export class BoardComponent implements OnInit {
   tiles: Tile[];
+  bets: Bet[]=[];
 
   constructor() {
     this.tiles = []
@@ -46,7 +48,15 @@ export class BoardComponent implements OnInit {
   }
 
   async placeBet(cellKey: string): Promise<void>{
-    console.info(cellKey);
+    this.bets.push(new Bet(cellKey, 10))
+
+    console.info("bet on "+cellKey);
+  }
+
+  async spin(): Promise<void>{
+    let dealer:Dealer=new Dealer();
+    let payoff:number=dealer.pay(this.bets);
+    console.info("payoff= "+payoff);
   }
 
 }

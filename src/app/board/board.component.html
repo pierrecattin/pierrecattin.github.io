@@ -1,4 +1,4 @@
-<mat-grid-list cols="3" rowHeight="75px" gutterSize=15>
+<mat-grid-list cols="3" rowHeight="45px" gutterSize=15>
     <mat-grid-tile  *ngFor="let tile of tiles" [colspan]="tile.cols" [rowspan]="tile.rows"
         [style.background]="tile.color" 
         (click)=placeBet(tile.text)>

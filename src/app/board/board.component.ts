@@ -2,7 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { BetDialogComponent } from '../bet-dialog/bet-dialog.component';
 import { Bet } from '../logic/bet/bet';
 import { Dealer } from '../logic/dealer/dealer';
-import { MatDialog } from '@angular/material/dialog'
+import {MatDialog} from '@angular/material/dialog';
+
+
 
 export interface Tile {
   color: string;
@@ -10,6 +12,7 @@ export interface Tile {
   rows: number;
   text: string;
 }
+
 
 @Component({
   selector: 'app-board',
@@ -46,9 +49,11 @@ export class BoardComponent {
 
   placeBet(cellKey: string): void {
     this.bets.push(new Bet(cellKey, 10))
-    this.dialog.open(BetDialogComponent);
-
-    console.info("bet on " + cellKey);
+    this.dialog.open(BetDialogComponent,  {
+      data: {
+        cellKeyPicked: cellKey
+      }
+    });
   }
 
   spin(): void {

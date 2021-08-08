@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { BetDialogComponent } from '../bet-dialog/bet-dialog.component';
 import { Bet } from '../logic/bet/bet';
 import { Dealer } from '../logic/dealer/dealer';
+import { MatDialog } from '@angular/material/dialog'
 
 export interface Tile {
   color: string;
@@ -15,16 +16,16 @@ export interface Tile {
   templateUrl: './board.component.html',
   styleUrls: ['./board.component.scss']
 })
-export class BoardComponent implements OnInit {
+export class BoardComponent {
   tiles: Tile[];
-  bets: Bet[]=[];
+  bets: Bet[] = [];
 
-  constructor() {
+  constructor(public dialog: MatDialog) {
     this.tiles = []
 
     for (var num = 1; num <= 36; num++) {
-      let cellColor: string='';
-      if (num <= 10 || (num >= 19 && num <= 28)){
+      let cellColor: string = '';
+      if (num <= 10 || (num >= 19 && num <= 28)) {
         if (num % 2 == 1) {
           cellColor = 'darkred';
         } else {
@@ -43,20 +44,17 @@ export class BoardComponent implements OnInit {
 
   }
 
-  ngOnInit(): void {
-
-  }
-
-  async placeBet(cellKey: string): Promise<void>{
+  placeBet(cellKey: string): void {
     this.bets.push(new Bet(cellKey, 10))
+    this.dialog.open(BetDialogComponent);
 
-    console.info("bet on "+cellKey);
+    console.info("bet on " + cellKey);
   }
 
-  async spin(): Promise<void>{
-    let dealer:Dealer=new Dealer();
-    let payoff:number=dealer.pay(this.bets);
-    console.info("payoff= "+payoff);
+  spin(): void {
+    let dealer: Dealer = new Dealer();
+    let payoff: number = dealer.pay(this.bets);
+    console.info("payoff= " + payoff);
   }
 
 }

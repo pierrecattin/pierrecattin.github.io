@@ -1,14 +1,7 @@
 import { Component} from '@angular/core';
-
 @Component({
-  selector: 'app-bet-dialog',
-  template: `
-    <p>
-      bet-dialog works!
-    </p>
-  `,
-  styles: [
-  ]
+  selector: 'bet-dialog',
+  template: `bet-dialog works!`
 })
 export class BetDialogComponent  {
 }

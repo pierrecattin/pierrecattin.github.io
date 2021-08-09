@@ -9,20 +9,20 @@
     border-spacing:0px;
     vertical-align: top;
     transition: all 0.2s ease-in-out;
-    box-shadow: 5px 10px 20px rgba(0, 0, 0, 0.8);
+    box-shadow: 5px 10px 20px rgba(0, 0, 0, 0.5);
     user-select: none
 }
 
 .clickable-tile:hover {
     transform:scale(1.05);
     z-index: 1;
-    box-shadow: 10px 20px 20px rgba(0, 0, 0, 0.8);
+    box-shadow: 10px 20px 20px rgba(0, 0, 0, 0.5);
   }
   
   .clickable-tile:active {
     transform:scale(1.1);
     transition: all 0.01s ease-in-out;
-    box-shadow: 15px 30px 20px rgba(0, 0, 0, 0.8);
+    box-shadow: 15px 30px 20px rgba(0, 0, 0, 0.5);
   }
 
   .cell-label{

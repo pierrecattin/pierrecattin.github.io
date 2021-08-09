@@ -1,5 +1,5 @@
 import { Component, Inject} from '@angular/core';
-import { MAT_DIALOG_DATA} from '@angular/material/dialog';
+import {MatDialog, MatDialogRef, MAT_DIALOG_DATA} from '@angular/material/dialog';
 import { BetModalDialogData } from '../bet-modal-dialog-data';
 
 @Component({
@@ -7,5 +7,11 @@ import { BetModalDialogData } from '../bet-modal-dialog-data';
   templateUrl: './bet-dialog.component.html',
 })
 export class BetDialogComponent  {
-  constructor(@Inject(MAT_DIALOG_DATA) public data: BetModalDialogData) {}
+  constructor(
+    public dialogRef: MatDialogRef<BetDialogComponent>,
+    @Inject(MAT_DIALOG_DATA) public data: BetModalDialogData){}
+
+    onNoClick(): void {
+      this.dialogRef.close();
+    }
 }

@@ -1,4 +1,12 @@
 <h1 mat-dialog-title>Place new bet</h1>
 <div mat-dialog-content>
-  Betting on {{data.cellKeyPicked}}
+  <p>Betting on {{data.cellKeyPicked}}</p>
+  <mat-form-field appearance="fill">
+    <mat-label>Bet amount</mat-label>
+    <input matInput [(ngModel)]="data.betAmount">
+  </mat-form-field>
+</div>
+<div mat-dialog-action>
+  <button mat-button (click)="onNoClick()">Cancel</button>
+  <button mat-button [mat-dialog-close]="data.betAmount" cdkFocusInitial>Place bet</button>
 </div>

@@ -1,10 +1,10 @@
 export class Bet {
     cellKey:string;
-    value:Number;
+    amount:Number;
 
 
   constructor(cellKey:string, value:number) {
       this.cellKey=cellKey;
-      this.value=value;
+      this.amount=value;
   }
 }

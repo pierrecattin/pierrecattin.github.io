@@ -48,12 +48,20 @@ export class BoardComponent {
   }
 
   placeBet(cellKey: string): void {
-    this.bets.push(new Bet(cellKey, 10))
-    this.dialog.open(BetDialogComponent,  {
+    const dialogRef = this.dialog.open(BetDialogComponent,  {
       data: {
-        cellKeyPicked: cellKey
+        cellKeyPicked: cellKey,
+        betAmount:0
       }
     });
+    dialogRef.afterClosed().subscribe(result => {
+      this.saveBet(cellKey, result);
+    });
+  }
+
+  saveBet(cellKey:string, amount:number): void{
+    console.log("new bet on "+cellKey+" for "+amount );
+    this.bets.push(new Bet(cellKey, amount));
   }
 
   spin(): void {

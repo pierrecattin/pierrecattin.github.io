@@ -1,63 +1,13 @@
 <mat-grid-list cols="5" rowHeight="45px" gutterSize=10>
-    <mat-grid-tile [colspan]=1 [rowspan]=2 class="clickable-tile">
-        <div class="cell-label">1-18</div>
-    </mat-grid-tile>
-    <mat-grid-tile [colspan]=1 [rowspan]=4 class="clickable-tile">
-        <div class="cell-label">1-12</div>
-    </mat-grid-tile>
-    <mat-grid-tile *ngFor="let cell of cells.slice(0,6)" [colspan]=1 [rowspan]=1
-        [style.background]="cell.color" (click)=placeBet(cell.key) class="clickable-tile">
-        <div class="cell-label">{{cell.key}}</div>
-    </mat-grid-tile>
-    <mat-grid-tile [colspan]=1 [rowspan]=2 class="clickable-tile">
-        <div class="cell-label">Even</div>
-    </mat-grid-tile>
-    <mat-grid-tile *ngFor="let cell of cells.slice(6,12)" [colspan]=1 [rowspan]=1
-        [style.background]="cell.color" (click)=placeBet(cell.key) class="clickable-tile">
-        <div class="cell-label">{{cell.key}}</div>
-    </mat-grid-tile>
-    <mat-grid-tile [colspan]=1 [rowspan]=2 style="background-color: darkred;" class="clickable-tile">
-    </mat-grid-tile>
-    <mat-grid-tile [colspan]=1 [rowspan]=4 class="clickable-tile">
-        <div class="cell-label">13-24</div>
-    </mat-grid-tile>
-    <mat-grid-tile *ngFor="let cell of cells.slice(12,18)" [colspan]=1 [rowspan]=1
-        [style.background]="cell.color" (click)=placeBet(cell.key) class="clickable-tile">
-        <div class="cell-label">{{cell.key}}</div>
-    </mat-grid-tile>
-    <mat-grid-tile [colspan]=1 [rowspan]=2 style="background-color: black;" class="clickable-tile">
-    </mat-grid-tile>
-    <mat-grid-tile *ngFor="let cell of cells.slice(18,24)" [colspan]=1 [rowspan]=1
-    [style.background]="cell.color" (click)=placeBet(cell.key) class="clickable-tile">
-    <div class="cell-label">{{cell.key}}</div>
-</mat-grid-tile>
-<mat-grid-tile [colspan]=1 [rowspan]=2 class="clickable-tile">
-    <div class="cell-label">Odd</div>
-</mat-grid-tile>
-<mat-grid-tile [colspan]=1 [rowspan]=4 class="clickable-tile">
-    <div class="cell-label">25-36</div>
-</mat-grid-tile>
-<mat-grid-tile *ngFor="let cell of cells.slice(24,30)" [colspan]=1 [rowspan]=1
-    [style.background]="cell.color" (click)=placeBet(cell.key) class="clickable-tile">
-    <div class="cell-label">{{cell.key}}</div>
-</mat-grid-tile>
-<mat-grid-tile [colspan]=1 [rowspan]=2 class="clickable-tile">
-    <div class="cell-label">19-36</div>
-</mat-grid-tile>
-<mat-grid-tile *ngFor="let cell of cells.slice(30,36)" [colspan]=1 [rowspan]=1
+    <mat-grid-tile *ngFor="let cell of cells.slice(0,45)" [colspan]="cell.colspan" [rowspan]="cell.rowspan"
     [style.background]="cell.color" (click)=placeBet(cell.key) class="clickable-tile">
     <div class="cell-label">{{cell.key}}</div>
 </mat-grid-tile>
 <mat-grid-tile [colspan]=2 [rowspan]=1 class="invisible-tile">
 </mat-grid-tile>
-<mat-grid-tile [colspan]=1 [rowspan]=1 class="clickable-tile">
-    <div class="cell-label">1st col</div>
-</mat-grid-tile>
-<mat-grid-tile [colspan]=1 [rowspan]=1 class="clickable-tile">
-    <div class="cell-label">2nd col</div>
-</mat-grid-tile>
-<mat-grid-tile [colspan]=1 [rowspan]=1 class="clickable-tile">
-    <div class="cell-label">3rd col</div>
+<mat-grid-tile *ngFor="let cell of cells.slice(45,48)" [colspan]="cell.colspan" [rowspan]="cell.rowspan"
+[style.background]="cell.color" (click)=placeBet(cell.key) class="clickable-tile">
+<div class="cell-label">{{cell.key}}</div>
 </mat-grid-tile>
 </mat-grid-list>
 <div>

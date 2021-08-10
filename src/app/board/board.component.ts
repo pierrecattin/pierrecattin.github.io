@@ -17,22 +17,39 @@ export class BoardComponent {
 
   constructor(public dialog: MatDialog) {
     this.cells = []
-    for (var num = 1; num <= 36; num++) {
-      this.cells.push(new Cell(String(num)));
-    }
 
-    this.cells.push(new Cell(String("Even")));
-    this.cells.push(new Cell(String("Odd")));
-    this.cells.push(new Cell(String("1st col")));
-    this.cells.push(new Cell(String("2nd col")));
-    this.cells.push(new Cell(String("3rd col")));
-    this.cells.push(new Cell(String("Red")));
-    this.cells.push(new Cell(String("Black")));
-    this.cells.push(new Cell(String("1-18")));
-    this.cells.push(new Cell(String("1-12")));
-    this.cells.push(new Cell(String("13-24")));
-    this.cells.push(new Cell(String("25-36")));
-    this.cells.push(new Cell(String("19-36")));
+    // add cells in order they should be placed
+    this.cells.push(new Cell("1-18", 1, 2));
+    this.cells.push(new Cell("1-12", 1, 4));
+
+    for (var num = 1; num <= 6; num++) {
+      this.cells.push(new Cell(String(num), 1, 1));
+    }
+    this.cells.push(new Cell("Even", 1, 2));
+    for (var num = 7; num <= 12; num++) {
+      this.cells.push(new Cell(String(num), 1, 1));
+    }
+    this.cells.push(new Cell("Red", 1, 2));
+    this.cells.push(new Cell("13-24", 1, 4));
+    for (var num = 13; num <= 18; num++) {
+      this.cells.push(new Cell(String(num), 1, 1));
+    }
+    this.cells.push(new Cell("Black", 1, 2));
+    for (var num = 19; num <= 24; num++) {
+      this.cells.push(new Cell(String(num), 1, 1));
+    }
+    this.cells.push(new Cell("Odd", 1, 2));
+    this.cells.push(new Cell("25-36", 1, 4));
+    for (var num = 25; num <= 30; num++) {
+      this.cells.push(new Cell(String(num), 1, 1));
+    }
+    this.cells.push(new Cell("19-36", 1, 2));
+    for (var num = 31; num <= 36; num++) {
+      this.cells.push(new Cell(String(num), 1, 1));
+    }
+    this.cells.push(new Cell("1st col", 1, 1));
+    this.cells.push(new Cell("2nd col", 1, 1));
+    this.cells.push(new Cell("3rd col", 1, 1));
   }
 
   placeBet(cellKey: string): void {

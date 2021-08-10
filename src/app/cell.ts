@@ -2,10 +2,16 @@ export class Cell {
     key: string;
     color: Cell.Color;
     type: Cell.Type;
-    constructor(key: string) {
+    colspan: number;
+    rowspan: number;
+
+
+    constructor(key: string,  colspan: number, rowspan: number) {
         this.key = key; // validity of key checked in findType()
         this.type = this.findType();
         this.color = this.findColor();
+        this.colspan=colspan;
+        this.rowspan=rowspan;
     }
 
 
@@ -33,6 +39,45 @@ export class Cell {
             case "19-36":
             case "25-36": {
                 return (Cell.Type.range);
+            }
+        }
+        throw new Error('Invalid key: ' + this.key);
+    }
+
+    setSpan(): void{
+        if (this.key.length <= 2) {
+            this.rowspan=1;
+            this.colspan=1;
+            return;
+        }
+        switch (this.key) {
+            case "Black":
+            case "Red": {
+                this.rowspan=1;
+                this.colspan=1;
+                return;
+            }
+            case "Even":
+            case "Odd": {
+                this.rowspan=1;
+                this.colspan=1;
+                return;
+            }
+            case "1st col":
+            case "2nd col":
+            case "3rd col": {
+                this.rowspan=1;
+                this.colspan=1;
+                return;
+            }
+            case "1-18":
+            case "1-12":
+            case "13-24":
+            case "19-36":
+            case "25-36": {
+                this.rowspan=1;
+                this.colspan=1;
+                return;
             }
         }
         throw new Error('Invalid key: ' + this.key);

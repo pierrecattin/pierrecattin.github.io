@@ -1,4 +1,4 @@
-import { Bet } from '../bet/bet';
+import { Bet } from './bet';
 
 export class Dealer {
 
@@ -9,7 +9,12 @@ export class Dealer {
         return outcome;
     }
 
+    betPayoff(spinOutcome:number, bet:Bet):number{
+         return(0);
+    }
+
     pay(bets: Bet[]): number{
-        return(this.spin());
+        let outcome:number=this.spin();
+        return(0);
     }
 }

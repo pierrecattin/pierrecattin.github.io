@@ -1,17 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { BetDialogComponent } from '../bet-dialog/bet-dialog.component';
-import { Bet } from '../logic/bet/bet';
-import { Dealer } from '../logic/dealer/dealer';
-import {MatDialog} from '@angular/material/dialog';
-
-
-
-export interface Tile {
-  color: string;
-  cols: number;
-  rows: number;
-  text: string;
-}
+import { Bet } from '../bet';
+import { Dealer } from '../dealer';
+import { Cell } from '../cell';
+import { MatDialog } from '@angular/material/dialog';
 
 
 @Component({
@@ -20,38 +12,34 @@ export interface Tile {
   styleUrls: ['./board.component.scss']
 })
 export class BoardComponent {
-  tiles: Tile[];
+  cells: Cell[];
   bets: Bet[] = [];
 
   constructor(public dialog: MatDialog) {
-    this.tiles = []
-
+    this.cells = []
     for (var num = 1; num <= 36; num++) {
-      let cellColor: string = '';
-      if (num <= 10 || (num >= 19 && num <= 28)) {
-        if (num % 2 == 1) {
-          cellColor = 'darkred';
-        } else {
-          cellColor = 'black';
-        }
-      } else {
-        if (num % 2 == 1) {
-          cellColor = 'black';
-        } else {
-          cellColor = 'darkred';
-        }
-      }
-
-      this.tiles.push({ text: num.toString(), cols: 1, rows: 1, color: cellColor })
+      this.cells.push(new Cell(String(num)));
     }
 
+    this.cells.push(new Cell(String("Even")));
+    this.cells.push(new Cell(String("Odd")));
+    this.cells.push(new Cell(String("1st col")));
+    this.cells.push(new Cell(String("2nd col")));
+    this.cells.push(new Cell(String("3rd col")));
+    this.cells.push(new Cell(String("Red")));
+    this.cells.push(new Cell(String("Black")));
+    this.cells.push(new Cell(String("1-18")));
+    this.cells.push(new Cell(String("1-12")));
+    this.cells.push(new Cell(String("13-24")));
+    this.cells.push(new Cell(String("25-36")));
+    this.cells.push(new Cell(String("19-36")));
   }
 
   placeBet(cellKey: string): void {
-    const dialogRef = this.dialog.open(BetDialogComponent,  {
+    const dialogRef = this.dialog.open(BetDialogComponent, {
       data: {
         cellKeyPicked: cellKey,
-        betAmount:0
+        betAmount: 0
       }
     });
     dialogRef.afterClosed().subscribe(result => {
@@ -59,8 +47,8 @@ export class BoardComponent {
     });
   }
 
-  saveBet(cellKey:string, amount:number): void{
-    console.log("new bet on "+cellKey+" for "+amount );
+  saveBet(cellKey: string, amount: number): void {
+    console.log("new bet on " + cellKey + " for " + amount);
     this.bets.push(new Bet(cellKey, amount));
   }
 

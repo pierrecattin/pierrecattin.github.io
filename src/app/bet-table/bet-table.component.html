@@ -1,4 +1,4 @@
-<table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+<table mat-table [dataSource]="dataSource" class="mat-elevation-z8" *ngIf="dataSource.length>0">
 
     <!-- Cell Column -->
     <ng-container matColumnDef="cellKey">

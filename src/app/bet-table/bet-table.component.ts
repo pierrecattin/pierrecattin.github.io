@@ -1,4 +1,9 @@
-import { Component, Input, OnInit, OnChanges, SimpleChange } from '@angular/core';
+import {
+  Component,
+  Input,
+  DoCheck,
+  KeyValueDiffers
+} from '@angular/core';
 import { Bet } from '../bet';
 
 export interface betTable {
@@ -12,27 +17,31 @@ export interface betTable {
   templateUrl: './bet-table.component.html',
   styleUrls: ['./bet-table.component.scss']
 })
-export class BetTableComponent implements OnChanges  {
-  @Input('bets') bets!:Bet[];
-
+export class BetTableComponent implements DoCheck {
+  @Input('bets') bets!: Bet[];
+  differ: any;
   displayedColumns: string[] = ['cellKey', 'amount'];
-  dataSource: betTable[]=[];
-  
+  dataSource: betTable[] = [];
 
-  ngOnChanges(changes: {[propName: string]: SimpleChange}) {
-    console.log("change: size of bets= " +this.bets.length);
-    this.refreshBetsTable();
+  constructor(differs: KeyValueDiffers) {
+    this.differ = differs.find([]).create();
   }
 
+  ngDoCheck(): void {
+    const changes = this.differ.diff(this.bets);
+    if (changes) {
+      this.refreshBetsTable();
+    }
+  }
 
-  refreshBetsTable(){
-    this.bets=[];
-    for(let bet of this.bets){
+  refreshBetsTable() {
+    this.dataSource=[];
+    for (let bet of this.bets) {
       this.addBetToTable(bet);
     }
   }
-  addBetToTable(bet:Bet):void{
-    let newEntry: betTable[]=[{cellKey:bet.cellKey, amount:bet.amount}];
+  addBetToTable(bet: Bet): void {
+    let newEntry: betTable[] = [{ cellKey: bet.cellKey, amount: bet.amount }];
     this.dataSource.push(newEntry[0]);
   }
 

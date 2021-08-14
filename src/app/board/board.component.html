@@ -10,6 +10,11 @@
 <div class="cell-label">{{cell.key}}</div>
 </mat-grid-tile>
 </mat-grid-list>
+<br/><br/>
+    <div style='width:30%;'>
+        <app-bet-table [bets]="bets"></app-bet-table>
+    </div>
+    <br/><br/>
 <div>
     <br>
     <button mat-raised-button (click)=spin()>Spin</button>

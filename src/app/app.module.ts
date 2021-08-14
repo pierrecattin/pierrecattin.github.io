@@ -9,15 +9,18 @@ import {MatInputModule} from '@angular/material/input'
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import {MatButtonModule}  from '@angular/material/button';
 import { FormsModule } from '@angular/forms';
+import { MatTableModule } from '@angular/material/table';
 import { AppComponent } from './app.component';
 import { BoardComponent } from './board/board.component';
 import { BetDialogComponent } from './bet-dialog/bet-dialog.component';
+import { BetTableComponent } from './bet-table/bet-table.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     BoardComponent,
-    BetDialogComponent
+    BetDialogComponent,
+    BetTableComponent
   ],
   imports: [
     BrowserModule,
@@ -28,7 +31,8 @@ import { BetDialogComponent } from './bet-dialog/bet-dialog.component';
     MatFormFieldModule,
     MatButtonModule,
     MatInputModule,
-    FormsModule
+    FormsModule,
+    MatTableModule
   ],
   providers: [],
   bootstrap: [AppComponent]

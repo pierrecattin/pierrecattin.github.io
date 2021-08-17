@@ -5,7 +5,7 @@ import {
   KeyValueDiffers
 } from '@angular/core';
 import { Bet } from '../bet';
-
+import { Cell } from '../cell';
 export interface betTable {
   cellKey: string;
   amount: Number;
@@ -41,7 +41,7 @@ export class BetTableComponent implements DoCheck {
     }
   }
   addBetToTable(bet: Bet): void {
-    let newEntry: betTable[] = [{ cellKey: bet.cellKey, amount: bet.amount }];
+    let newEntry: betTable[] = [{ cellKey: bet.cell.key, amount: bet.amount }];
     this.dataSource.push(newEntry[0]);
   }
 

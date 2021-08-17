@@ -1,12 +1,12 @@
 <mat-grid-list cols="5" rowHeight="45px" gutterSize=10>
     <mat-grid-tile *ngFor="let cell of cells.slice(0,45)" [colspan]="cell.colspan" [rowspan]="cell.rowspan"
-    [style.background]="cell.color" (click)=placeBet(cell.key) class="clickable-tile">
+    [style.background]="cell.color" (click)=placeBet(cell) class="clickable-tile">
     <div class="cell-label">{{cell.key}}</div>
 </mat-grid-tile>
 <mat-grid-tile [colspan]=2 [rowspan]=1 class="invisible-tile">
 </mat-grid-tile>
 <mat-grid-tile *ngFor="let cell of cells.slice(45,48)" [colspan]="cell.colspan" [rowspan]="cell.rowspan"
-[style.background]="cell.color" (click)=placeBet(cell.key) class="clickable-tile">
+[style.background]="cell.color" (click)=placeBet(cell) class="clickable-tile">
 <div class="cell-label">{{cell.key}}</div>
 </mat-grid-tile>
 </mat-grid-list>

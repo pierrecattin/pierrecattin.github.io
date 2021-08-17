@@ -52,23 +52,22 @@ export class BoardComponent {
     this.cells.push(new Cell("3rd col", 1, 1));
   }
 
-  placeBet(cellKey: string): void {
+  placeBet(cell: Cell): void {
     const dialogRef = this.dialog.open(BetDialogComponent, {
       data: {
-        cellKeyPicked: cellKey,
+        cellPicked: Cell,
         betAmount: ''
       }
     });
     dialogRef.afterClosed().subscribe(result => {
       if (this.isNumber(result)) {
-        this.saveBet(cellKey, Number(result));
+        this.saveBet(cell, Number(result));
       }
     });
   }
 
-  saveBet(cellKey: string, amount: number): void {
-    console.log("new bet on " + cellKey + " for " + amount);
-    this.bets.push(new Bet(cellKey, amount));
+  saveBet(cell:Cell, amount: number): void {
+    this.bets.push(new Bet(cell, amount));
   }
 
   spin(): void {

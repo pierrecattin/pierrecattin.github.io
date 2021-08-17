@@ -1,10 +1,11 @@
+import { Cell } from './cell';
 export class Bet {
-    cellKey:string;
+    cell:Cell;
     amount:Number;
 
 
-  constructor(cellKey:string, value:number) {
-      this.cellKey=cellKey;
+  constructor(cell:Cell, value:number) {
+      this.cell=cell;
       this.amount=value;
   }
 }

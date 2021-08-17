@@ -1,4 +1,5 @@
+import { Cell } from './cell';
 export interface BetModalDialogData {
-    cellKeyPicked: String;
+    cellPicked: Cell;
     betAmount: number;
 }

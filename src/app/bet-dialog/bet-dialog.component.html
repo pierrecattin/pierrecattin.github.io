@@ -1,6 +1,6 @@
 <h1 mat-dialog-title>Place new bet</h1>
 <div mat-dialog-content>
-  <p>Betting on {{data.cellKeyPicked}}</p>
+  <p>Betting on {{data.cellPicked.key}}</p>
   <mat-form-field appearance="fill">
     <mat-label>Bet amount</mat-label>
     <input matInput [(ngModel)]="data.betAmount">

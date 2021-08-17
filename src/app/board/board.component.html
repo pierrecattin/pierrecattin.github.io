@@ -11,8 +11,10 @@
 </mat-grid-tile>
 </mat-grid-list>
 <br/><br/>
-    <div style='width:30%;'>
+    <div style='width:30%;' *ngIf="bets.length>0">
         <app-bet-table [bets]="bets"></app-bet-table>
+        <br/>
+        <button mat-raised-button (click)=clearBets()>Clear bets</button>
     </div>
     <br/><br/>
 <div>

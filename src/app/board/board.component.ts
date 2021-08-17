@@ -71,6 +71,10 @@ export class BoardComponent {
     this.bets.push(new Bet(cell, amount));
   }
 
+  clearBets(): void{
+    this.bets=[];
+  }
+
   spin(): void {
     let dealer: Dealer = new Dealer();
     let results: [number, number] = dealer.pay(this.bets);
@@ -81,6 +85,10 @@ export class BoardComponent {
         payoff: results[1]
       }
     });
+    dialogRef.afterClosed().subscribe(results => {
+      this.clearBets()
+    });
+    
 }
 
   isNumber(n: any): boolean {

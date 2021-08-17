@@ -80,4 +80,17 @@ export class BoardComponent {
     return !isNaN(parseFloat(n)) && !isNaN(n - 0);
   }
 
+  mapFillColor(keyColor:Cell.Color): String{
+    switch (keyColor){
+      case Cell.Color.black:{
+        return("black");
+      } case Cell.Color.green:{
+        return("darkgreen");
+      } case (Cell.Color.red): {
+        return("darkred");
+      }
+    }
+
+  }
+
 }

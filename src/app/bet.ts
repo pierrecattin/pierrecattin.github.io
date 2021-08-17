@@ -1,7 +1,7 @@
 import { Cell } from './cell';
 export class Bet {
     cell:Cell;
-    amount:Number;
+    amount:number;
 
 
   constructor(cell:Cell, value:number) {

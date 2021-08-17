@@ -11,34 +11,19 @@ export class Dealer {
     }
 
     betPayoff(spinOutcome:number, bet:Bet):number{
-        /*switch () {
-            case Cell.:
-            case "Red": {
-                return (Cell.Type.color);
-            }
-            case "Even":
-            case "Odd": {
-                return (Cell.Type.parity);
-            }
-            case "1st col":
-            case "2nd col":
-            case "3rd col": {
-                return (Cell.Type.column);
-            }
-            case "1-18":
-            case "1-12":
-            case "13-24":
-            case "19-36":
-            case "25-36": {
-                return (Cell.Type.range);
-            }
-        } */
-        return(0);
-
+        if(bet.cell.winningNumbers.includes(spinOutcome)){
+            return(bet.cell.payoffFactor*bet.amount);
+        } else {
+            return(0);
+        }
     }
 
     pay(bets: Bet[]): number{
         let outcome:number=this.spin();
-        return(0);
+        let totalPayoff: number=0;
+        for(let bet of bets){
+            totalPayoff+=this.betPayoff(outcome, bet);
+        }
+        return(totalPayoff);
     }
 }

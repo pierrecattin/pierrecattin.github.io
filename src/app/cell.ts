@@ -2,20 +2,22 @@ export class Cell {
     key: string;
     color: Cell.Color;
     type: Cell.Type;
+    payoffFactor: number;
+    winningNumbers: number[];
     colspan: number;
     rowspan: number;
 
-
-    constructor(key: string,  colspan: number, rowspan: number) {
-        this.key = key; // validity of key checked in findType()
-        this.type = this.findType();
-        this.color = this.findColor();
-        this.colspan=colspan;
-        this.rowspan=rowspan;
+    constructor(key: string, colspan: number, rowspan: number) {
+        this.key = key; // validity of key checked in getType()
+        this.type = this.getType();
+        this.color = this.getColor();
+        this.winningNumbers = this.getWinningNumbers();
+        this.payoffFactor = this.getPayoffFactor();
+        this.colspan = colspan;
+        this.rowspan = rowspan;
     }
 
-
-    findType(): Cell.Type {
+    getType(): Cell.Type {
         if (this.key.length <= 2) {
             return (Cell.Type.number);
         }
@@ -44,30 +46,82 @@ export class Cell {
         throw new Error('Invalid key: ' + this.key);
     }
 
-    setSpan(): void{
+
+    getWinningNumbers(): number[] {
+        let winningNumbers: number[] = [];
+        switch (this.type) {
+            case (Cell.Type.number): {
+                winningNumbers.push(this.getNumber());
+                return (winningNumbers);
+            }
+            case Cell.Type.color: {
+                for (let i = 1; i <= 36; i++) {
+                    if (this.color == this.findNumberColor(i)) {
+                        winningNumbers.push(i);
+                    }
+                }
+                return (winningNumbers);
+            } case Cell.Type.parity: {
+                for (let i = 1; i <= 36; i++) {
+                    if ((this.key == "Even" && (i % 2 == 0)) ||
+                        this.key == "Odd" && (i % 2 == 1)) {
+                        winningNumbers.push(i);
+                    }
+                }
+                return (winningNumbers);
+            } case Cell.Type.range: {
+                let rangeBounds:string[]=this.key.split("-");
+                if(rangeBounds.length!=2){
+                    throw new Error('Invalid key for Cell.Type.range: ' + this.key);
+                }
+                for(let i = +rangeBounds[0]; i<=+rangeBounds[1]; i++){
+                    winningNumbers.push(i);
+                }
+                return(winningNumbers);
+            } case Cell.Type.column: {
+                for (let i = 1; i <= 36; i++) {
+                    if ((this.key == "1st col" && (i % 3 == 1)) ||
+                        this.key == "2nd col" && (i % 3 == 2)||
+                        this.key == "3rd col" && (i % 3 == 0)) {
+                        winningNumbers.push(i);
+                    }
+                }
+                return(winningNumbers);
+            }
+        }
+        throw new Error('Invalid key: ' + this.key);
+    }
+
+
+
+    getPayoffFactor(): number {
+        return (36 / (this.winningNumbers.length));
+    }
+
+    getSpan(): void {
         if (this.key.length <= 2) {
-            this.rowspan=1;
-            this.colspan=1;
+            this.rowspan = 1;
+            this.colspan = 1;
             return;
         }
         switch (this.key) {
             case "Black":
             case "Red": {
-                this.rowspan=1;
-                this.colspan=1;
+                this.rowspan = 1;
+                this.colspan = 1;
                 return;
             }
             case "Even":
             case "Odd": {
-                this.rowspan=1;
-                this.colspan=1;
+                this.rowspan = 1;
+                this.colspan = 1;
                 return;
             }
             case "1st col":
             case "2nd col":
             case "3rd col": {
-                this.rowspan=1;
-                this.colspan=1;
+                this.rowspan = 1;
+                this.colspan = 1;
                 return;
             }
             case "1-18":
@@ -75,15 +129,15 @@ export class Cell {
             case "13-24":
             case "19-36":
             case "25-36": {
-                this.rowspan=1;
-                this.colspan=1;
+                this.rowspan = 1;
+                this.colspan = 1;
                 return;
             }
         }
         throw new Error('Invalid key: ' + this.key);
     }
 
-    findColor(): Cell.Color {
+    getColor(): Cell.Color {
         switch (this.type) {
             case Cell.Type.color: {
                 if (this.key == "Black") {
@@ -93,7 +147,7 @@ export class Cell {
                 }
             }
             case Cell.Type.number: {
-                return this.findNumberColor();
+                return this.getNumberColor();
             }
         }
         return (Cell.Color.green); // for type column and range 
@@ -111,10 +165,12 @@ export class Cell {
         }
     }
 
-    findNumberColor(): Cell.Color {
+    getNumberColor(): Cell.Color {
         this.checkTypeNumber();
-        let num: number = this.getNumber();
+        return (this.findNumberColor(this.getNumber()));
+    }
 
+    findNumberColor(num: number): Cell.Color {
         let cellColor: Cell.Color;
         if (num <= 10 || (num >= 19 && num <= 28)) {
             if (num % 2 == 1) {
@@ -131,6 +187,7 @@ export class Cell {
         }
         return (cellColor);
     }
+
 }
 
 export namespace Cell {
@@ -143,8 +200,8 @@ export namespace Cell {
     }
 
     export enum Color {
-        green = "darkgreen",
-        red = "darkred",
+        green = "green",
+        red = "red",
         black = "black"
     }
 }

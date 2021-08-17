@@ -89,7 +89,6 @@ export class Cell {
                 return(winningNumbers);
             }
         }
-        throw new Error('Invalid key: ' + this.key);
     }
 
 

@@ -18,12 +18,13 @@ export class Dealer {
         }
     }
 
-    pay(bets: Bet[]): number{
+    pay(bets: Bet[]): [number, number]{
         let outcome:number=this.spin();
         let totalPayoff: number=0;
         for(let bet of bets){
             totalPayoff+=this.betPayoff(outcome, bet);
         }
-        return(totalPayoff);
+        return([outcome, totalPayoff]);
     }
 }
+

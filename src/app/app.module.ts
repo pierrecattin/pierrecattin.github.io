@@ -14,13 +14,15 @@ import { AppComponent } from './app.component';
 import { BoardComponent } from './board/board.component';
 import { BetDialogComponent } from './bet-dialog/bet-dialog.component';
 import { BetTableComponent } from './bet-table/bet-table.component';
+import { PayoffDialogComponent } from './payoff-dialog/payoff-dialog.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     BoardComponent,
     BetDialogComponent,
-    BetTableComponent
+    BetTableComponent,
+    PayoffDialogComponent
   ],
   imports: [
     BrowserModule,

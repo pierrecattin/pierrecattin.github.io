@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { BetDialogComponent } from '../bet-dialog/bet-dialog.component';
+import { PayoffDialogComponent } from '../payoff-dialog/payoff-dialog.component';
 import { Bet } from '../bet';
 import { Dealer } from '../dealer';
 import { Cell } from '../cell';
@@ -66,28 +67,34 @@ export class BoardComponent {
     });
   }
 
-  saveBet(cell:Cell, amount: number): void {
+  saveBet(cell: Cell, amount: number): void {
     this.bets.push(new Bet(cell, amount));
   }
 
   spin(): void {
     let dealer: Dealer = new Dealer();
-    let payoff: number = dealer.pay(this.bets);
-    console.info("payoff= " + payoff);
-  }
+    let results: [number, number] = dealer.pay(this.bets);
 
-  isNumber(n:any):boolean {
+    const dialogRef = this.dialog.open(PayoffDialogComponent, {
+      data: {
+        spinOutcome:results[0],
+        payoff: results[1]
+      }
+    });
+}
+
+  isNumber(n: any): boolean {
     return !isNaN(parseFloat(n)) && !isNaN(n - 0);
   }
 
-  mapFillColor(keyColor:Cell.Color): String{
-    switch (keyColor){
-      case Cell.Color.black:{
-        return("black");
-      } case Cell.Color.green:{
-        return("darkgreen");
+  mapFillColor(keyColor: Cell.Color): String {
+    switch (keyColor) {
+      case Cell.Color.black: {
+        return ("black");
+      } case Cell.Color.green: {
+        return ("darkgreen");
       } case (Cell.Color.red): {
-        return("darkred");
+        return ("darkred");
       }
     }
 

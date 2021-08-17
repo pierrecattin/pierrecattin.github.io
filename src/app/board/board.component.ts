@@ -56,11 +56,13 @@ export class BoardComponent {
     const dialogRef = this.dialog.open(BetDialogComponent, {
       data: {
         cellKeyPicked: cellKey,
-        betAmount: 0
+        betAmount: ''
       }
     });
     dialogRef.afterClosed().subscribe(result => {
-      this.saveBet(cellKey, result);
+      if (this.isNumber(result)) {
+        this.saveBet(cellKey, Number(result));
+      }
     });
   }
 
@@ -73,6 +75,10 @@ export class BoardComponent {
     let dealer: Dealer = new Dealer();
     let payoff: number = dealer.pay(this.bets);
     console.info("payoff= " + payoff);
+  }
+
+  isNumber(n:any):boolean {
+    return !isNaN(parseFloat(n)) && !isNaN(n - 0);
   }
 
 }

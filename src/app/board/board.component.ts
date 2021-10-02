@@ -5,7 +5,7 @@ import { Bet } from '../bet';
 import { Dealer } from '../dealer';
 import { Cell } from '../cell';
 import { MatDialog } from '@angular/material/dialog';
-
+import Web3 from 'web3';
 
 @Component({
   selector: 'app-board',
@@ -17,6 +17,9 @@ export class BoardComponent {
   bets: Bet[] = [];
 
   constructor(public dialog: MatDialog) {
+    const web3 = new Web3('http://localhost:4200');
+
+
     this.cells = []
 
     // add cells in order they should be placed

@@ -5,20 +5,22 @@ import { Bet } from '../bet';
 import { Dealer } from '../dealer';
 import { Cell } from '../cell';
 import { MatDialog } from '@angular/material/dialog';
-import Web3 from 'web3';
+import {ContractService} from '../contract.service';
 
 @Component({
   selector: 'app-board',
   templateUrl: './board.component.html',
-  styleUrls: ['./board.component.scss']
+  styleUrls: ['./board.component.scss'],
+  providers: [ContractService]
 })
-export class BoardComponent {
+export class BoardComponent implements OnInit {
   cells: Cell[];
   bets: Bet[] = [];
+  userAddress: any=null;
 
-  constructor(public dialog: MatDialog) {
-    const web3 = new Web3('http://localhost:4200');
 
+  constructor(public dialog: MatDialog,
+    private contractService: ContractService) {
 
     this.cells = []
 
@@ -54,6 +56,14 @@ export class BoardComponent {
     this.cells.push(new Cell("1st col", 1, 1));
     this.cells.push(new Cell("2nd col", 1, 1));
     this.cells.push(new Cell("3rd col", 1, 1));
+  }
+
+  ngOnInit(){
+    this.connectAccount();
+  }
+
+  async connectAccount(){
+    this.userAddress = await this.contractService.getAccount(); 
   }
 
   placeBet(cell: Cell): void {

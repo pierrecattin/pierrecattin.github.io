@@ -66,6 +66,10 @@ export class BoardComponent implements OnInit {
     this.userAddress = await this.contractService.getAccount(); 
   }
 
+  testTransfer(){
+    this.contractService.testTransfer();
+  }
+
   placeBet(cell: Cell): void {
     const dialogRef = this.dialog.open(BetDialogComponent, {
       data: {

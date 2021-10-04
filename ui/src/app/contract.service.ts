@@ -5,7 +5,7 @@ import Web3  from 'Web3';
 declare let require: any;
 declare let window: any;
 
-const ABI = require('../../contract/abi.json');
+const ABI = require('../../../contract/abi.json');
 const ADDRESS = "0xf0c40736B432AF63A05b01405eD64b58E263FCCC";
 
 @Injectable({

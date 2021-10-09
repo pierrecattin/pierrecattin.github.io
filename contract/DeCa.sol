@@ -68,61 +68,67 @@ contract DeCa is ERC20 {
         }
     }
 
-    function spinSingleBet(
-        Bet calldata bet,
+    function spin(
+        Bet[] calldata bets,
         uint8 spinResult // TODO: replace by VRF
     ) public returns (int256 netProfitOut) {
-        BetType betType = bet.betType;
-        uint8 cellNumber = bet.cellNumber;
-        uint256 betAmount = bet.amount;
-
+        uint256 totalBetAmount = 0;
+        for (uint256 betIx = 0; betIx < bets.length; betIx++) {
+            totalBetAmount += bets[1].amount;
+        }
         uint256 senderBalance = balanceOf(msg.sender);
         require(
-            senderBalance >= betAmount * 10**decimals(),
+            senderBalance >= totalBetAmount * 10**decimals(),
             "betAmount exceeds balance of sender"
         );
 
-        int256 netProfit = 0;
-        netProfit -= int256(betAmount);
+        int256 netProfit = -int256(totalBetAmount);
 
-        if (betType == BetType.number && spinResult == cellNumber) {
-            require(
-                cellNumber < 37 && cellNumber > 0,
-                "Possible cell number are 1-36"
-            );
-            netProfit += int256(betAmount) * 36;
-        } else if (
-            betType == BetType.black && numberColors[spinResult] == Color.black
-        ) {
-            netProfit += int256(betAmount) * 2;
-        } else if (
-            betType == BetType.red && numberColors[spinResult] == Color.red
-        ) {
-            netProfit += int256(betAmount) * 2;
-        } else if (betType == BetType.odd && spinResult % 2 == 1) {
-            netProfit += int256(betAmount) * 2;
-        } else if (betType == BetType.even && spinResult % 2 == 0) {
-            netProfit += int256(betAmount) * 2;
-        } else if (betType == BetType.range_1_12 && spinResult < 13) {
-            netProfit += int256(betAmount) * 3;
-        } else if (
-            betType == BetType.range_13_24 && spinResult > 12 && spinResult < 25
-        ) {
-            netProfit += int256(betAmount) * 3;
-        } else if (betType == BetType.range_25_36 && spinResult > 24) {
-            netProfit += int256(betAmount) * 3;
-        } else if (betType == BetType.range_1_18 && spinResult < 19) {
-            netProfit += int256(betAmount) * 2;
-        } else if (betType == BetType.range_19_36 && spinResult > 18) {
-            netProfit += int256(betAmount) * 2;
-        } else if (betType == BetType.column_1 && spinResult % 3 == 1) {
-            netProfit += int256(betAmount) * 3;
-        } else if (betType == BetType.column_2 && spinResult % 3 == 2) {
-            netProfit += int256(betAmount) * 3;
-        } else if (betType == BetType.column_3 && spinResult % 3 == 3) {
-            netProfit += int256(betAmount) * 3;
+        for (uint256 betIx = 0; betIx < bets.length; betIx++) {
+            BetType betType = bets[betIx].betType;
+            uint8 cellNumber = bets[betIx].cellNumber;
+            uint256 betAmount = bets[betIx].amount;
+            if (betType == BetType.number && spinResult == cellNumber) {
+                require(
+                    cellNumber < 37 && cellNumber > 0,
+                    "Possible cell number are 1-36"
+                );
+                netProfit += int256(betAmount) * 36;
+            } else if (
+                betType == BetType.black &&
+                numberColors[spinResult] == Color.black
+            ) {
+                netProfit += int256(betAmount) * 2;
+            } else if (
+                betType == BetType.red && numberColors[spinResult] == Color.red
+            ) {
+                netProfit += int256(betAmount) * 2;
+            } else if (betType == BetType.odd && spinResult % 2 == 1) {
+                netProfit += int256(betAmount) * 2;
+            } else if (betType == BetType.even && spinResult % 2 == 0) {
+                netProfit += int256(betAmount) * 2;
+            } else if (betType == BetType.range_1_12 && spinResult < 13) {
+                netProfit += int256(betAmount) * 3;
+            } else if (
+                betType == BetType.range_13_24 &&
+                spinResult > 12 &&
+                spinResult < 25
+            ) {
+                netProfit += int256(betAmount) * 3;
+            } else if (betType == BetType.range_25_36 && spinResult > 24) {
+                netProfit += int256(betAmount) * 3;
+            } else if (betType == BetType.range_1_18 && spinResult < 19) {
+                netProfit += int256(betAmount) * 2;
+            } else if (betType == BetType.range_19_36 && spinResult > 18) {
+                netProfit += int256(betAmount) * 2;
+            } else if (betType == BetType.column_1 && spinResult % 3 == 1) {
+                netProfit += int256(betAmount) * 3;
+            } else if (betType == BetType.column_2 && spinResult % 3 == 2) {
+                netProfit += int256(betAmount) * 3;
+            } else if (betType == BetType.column_3 && spinResult % 3 == 3) {
+                netProfit += int256(betAmount) * 3;
+            }
         }
-
         _settle(netProfit);
         return (netProfit);
     }

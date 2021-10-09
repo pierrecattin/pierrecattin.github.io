@@ -69,11 +69,13 @@ contract DeCa is ERC20 {
     }
 
     function spinSingleBet(
-        BetType betType,
-        uint8 cellNumber,
-        uint256 betAmount,
+        Bet calldata bet,
         uint8 spinResult // TODO: replace by VRF
     ) public returns (int256 netProfitOut) {
+        BetType betType = bet.betType;
+        uint8 cellNumber = bet.cellNumber;
+        uint256 betAmount = bet.amount;
+
         uint256 senderBalance = balanceOf(msg.sender);
         require(
             senderBalance >= betAmount * 10**decimals(),

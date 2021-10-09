@@ -4,8 +4,7 @@ pragma solidity ^0.8.2;
 import "@openzeppelin/contracts@4.3.2/token/ERC20/ERC20.sol";
 
 contract DeCa is ERC20 {
-    // TODO: throw evens
-    event Payoff(bytes32 requestId, uint256 payoff);
+    event Payoff(uint8 spinResult, int256 netProfit);
 
     enum Color {
         black,
@@ -88,6 +87,7 @@ contract DeCa is ERC20 {
         }
 
         _settle(netProfit);
+        emit Payoff(spinResult, netProfit);
         return (netProfit);
     }
 

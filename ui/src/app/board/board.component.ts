@@ -5,7 +5,7 @@ import { Bet } from '../bet';
 import { Dealer } from '../dealer';
 import { Cell } from '../cell';
 import { MatDialog } from '@angular/material/dialog';
-import {ContractService} from '../contract.service';
+import { ContractService } from '../contract.service';
 
 @Component({
   selector: 'app-board',
@@ -16,7 +16,9 @@ import {ContractService} from '../contract.service';
 export class BoardComponent implements OnInit {
   cells: Cell[];
   bets: Bet[] = [];
-  userAddress: any=null;
+  userAddress: any = null;
+  tokenBalance: any = null;
+  tokenTotalSupply: any = null;
 
 
   constructor(public dialog: MatDialog,
@@ -58,16 +60,14 @@ export class BoardComponent implements OnInit {
     this.cells.push(new Cell("3rd col", 1, 1));
   }
 
-  ngOnInit(){
-    this.connectAccount();
+  ngOnInit() {
+    this.refreshContractState();
   }
 
-  async connectAccount(){
-    this.userAddress = await this.contractService.getAccount(); 
-  }
-
-  testTransfer(){
-    this.contractService.testTransfer();
+  async refreshContractState() {
+    this.userAddress = await this.contractService.getAccount();
+    this.tokenTotalSupply = await this.contractService.totalSupply();
+    this.tokenBalance = await this.contractService.balanceOf(this.userAddress);
   }
 
   placeBet(cell: Cell): void {
@@ -88,25 +88,31 @@ export class BoardComponent implements OnInit {
     this.bets.push(new Bet(cell, amount));
   }
 
-  clearBets(): void{
-    this.bets=[];
+  clearBets(): void {
+    this.bets = [];
   }
 
-  spin(): void {
+  spinSimulation(): void {
     let dealer: Dealer = new Dealer();
     let results: [number, number] = dealer.pay(this.bets);
 
     const dialogRef = this.dialog.open(PayoffDialogComponent, {
       data: {
-        spinOutcome:results[0],
+        spinOutcome: results[0],
         payoff: results[1]
       }
     });
     dialogRef.afterClosed().subscribe(results => {
       this.clearBets()
     });
-    
-}
+  }
+  async spin(): Promise<void> {
+    let dealer: Dealer = new Dealer();
+    let results: [number, number] = dealer.pay(this.bets);
+    await this.contractService.spin(results[0]);
+  }
+
+
 
   isNumber(n: any): boolean {
     return !isNaN(parseFloat(n)) && !isNaN(n - 0);

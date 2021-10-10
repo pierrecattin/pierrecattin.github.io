@@ -1,9 +1,6 @@
 import { Bet } from './bet';
-import { Cell } from './cell';
 
-export class Dealer {
-
-    
+export class Dealer {    
     spin(): number{
         let outcome:number=Math.ceil(Math.random() * 36);
         console.info("outcome= "+outcome);

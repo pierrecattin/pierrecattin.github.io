@@ -33,29 +33,27 @@ contract DeCa is ERC20 {
         uint256 amount;
     }
 
-    uint8[18]  redNumbers = [
-            1,
-            3,
-            5,
-            7,
-            9,
-            12,
-            14,
-            16,
-            18,
-            19,
-            21,
-            23,
-            25,
-            27,
-            30,
-            32,
-            34,
-            36
-        ];
+    uint8[18] redNumbers = [
+        1,
+        3,
+        5,
+        7,
+        9,
+        12,
+        14,
+        16,
+        18,
+        19,
+        21,
+        23,
+        25,
+        27,
+        30,
+        32,
+        34,
+        36
+    ];
     mapping(uint8 => Color) numberColors;
-
-    
 
     constructor() ERC20("DeCa", "DCA") {
         _mint(msg.sender, 1000000 * 10**decimals());

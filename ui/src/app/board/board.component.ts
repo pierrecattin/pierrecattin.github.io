@@ -92,10 +92,9 @@ export class BoardComponent implements OnInit {
     this.bets = [];
   }
 
-  spinSimulation(): void {
-    let dealer: Dealer = new Dealer();
-    let results: [number, number] = dealer.pay(this.bets);
-
+  async spin(): Promise<void> {
+    let dealer: Dealer = new Dealer(this.contractService);
+    let results: [number, number] = await dealer.pay(this.bets);
     const dialogRef = this.dialog.open(PayoffDialogComponent, {
       data: {
         spinOutcome: results[0],
@@ -105,11 +104,6 @@ export class BoardComponent implements OnInit {
     dialogRef.afterClosed().subscribe(results => {
       this.clearBets()
     });
-  }
-  async spin(): Promise<void> {
-    let dealer: Dealer = new Dealer();
-    let results: [number, number] = dealer.pay(this.bets);
-    await this.contractService.spin(results[0]);
   }
 
 

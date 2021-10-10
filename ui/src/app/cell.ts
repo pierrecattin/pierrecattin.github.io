@@ -187,6 +187,40 @@ export class Cell {
         return (cellColor);
     }
 
+    public adaptForContract(): [number, number]{
+        /*number, // 0
+        red, // 1
+        black, // 2
+        odd, // 3
+        even, // 4
+        range_1_18, // 5
+        range_19_36, // 6
+        range_1_12, // 7
+        range_13_24, // 8
+        range_25_36, // 9
+        column_1, // 10
+        column_2, // 11
+        column_3 // 12 */
+        if (this.key.length <= 2) {
+            return ([0,this.getNumber()]);
+        }
+        switch (this.key) {
+            case "Red": return([1,0])
+            case "Black": return([2,0])
+            case "Odd": return ([3,0]);
+            case "Even": return ([4,0]);
+            case "1-18": return ([5,0]);
+            case "19-36": return ([6,0]);
+            case "1-12": return ([7,0]);
+            case "13-24": return ([8,0]);
+            case "25-36":  return ([9,0]);
+            case "1st col": return ([10,0]);
+            case "2nd col": return ([11,0]);
+            case "3rd col": return ([12,0]);
+        }
+        throw new Error('Invalid key: ' + this.key);
+    }
+
 }
 
 export namespace Cell {

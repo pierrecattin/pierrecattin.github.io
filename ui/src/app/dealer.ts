@@ -24,10 +24,14 @@ export class Dealer {
     }
 
     public adaptBets(bets:Bet[]){
-        let amount1:number=bets[0].amount;
         let adaptedBets = [];
         for(let bet of bets){
-            adaptedBets.push({betType:1, cellNumber:0, amount:bet.amount});
+            let cellAdaptedForContract = bet.cell.adaptForContract();
+            adaptedBets.push({betType:cellAdaptedForContract[0], 
+                cellNumber:cellAdaptedForContract[1], 
+                amount:bet.amount});
+
+            console.log("adaptBets: "+cellAdaptedForContract[0]+"; "+cellAdaptedForContract[1]+"; "+ bet.amount)
         }
         return(adaptedBets);
       }

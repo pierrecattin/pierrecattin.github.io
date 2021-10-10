@@ -445,6 +445,8 @@ class BoardComponent {
         this.contractService = contractService;
         this.bets = [];
         this.userAddress = null;
+        this.tokenBalance = null;
+        this.tokenTotalSupply = null;
         this.cells = [];
         // add cells in order they should be placed
         this.cells.push(new _cell__WEBPACK_IMPORTED_MODULE_4__.Cell("1-18", 1, 2));
@@ -479,15 +481,14 @@ class BoardComponent {
         this.cells.push(new _cell__WEBPACK_IMPORTED_MODULE_4__.Cell("3rd col", 1, 1));
     }
     ngOnInit() {
-        this.connectAccount();
+        this.refreshContractState();
     }
-    connectAccount() {
+    refreshContractState() {
         return (0,tslib__WEBPACK_IMPORTED_MODULE_8__.__awaiter)(this, void 0, void 0, function* () {
             this.userAddress = yield this.contractService.getAccount();
+            this.tokenTotalSupply = yield this.contractService.totalSupply();
+            this.tokenBalance = yield this.contractService.balanceOf(this.userAddress);
         });
-    }
-    testTransfer() {
-        this.contractService.testTransfer();
     }
     placeBet(cell) {
         const dialogRef = this.dialog.open(_bet_dialog_bet_dialog_component__WEBPACK_IMPORTED_MODULE_0__.BetDialogComponent, {
@@ -509,16 +510,18 @@ class BoardComponent {
         this.bets = [];
     }
     spin() {
-        let dealer = new _dealer__WEBPACK_IMPORTED_MODULE_3__.Dealer();
-        let results = dealer.pay(this.bets);
-        const dialogRef = this.dialog.open(_payoff_dialog_payoff_dialog_component__WEBPACK_IMPORTED_MODULE_1__.PayoffDialogComponent, {
-            data: {
-                spinOutcome: results[0],
-                payoff: results[1]
-            }
-        });
-        dialogRef.afterClosed().subscribe(results => {
-            this.clearBets();
+        return (0,tslib__WEBPACK_IMPORTED_MODULE_8__.__awaiter)(this, void 0, void 0, function* () {
+            let dealer = new _dealer__WEBPACK_IMPORTED_MODULE_3__.Dealer(this.contractService);
+            let results = yield dealer.pay(this.bets);
+            const dialogRef = this.dialog.open(_payoff_dialog_payoff_dialog_component__WEBPACK_IMPORTED_MODULE_1__.PayoffDialogComponent, {
+                data: {
+                    spinOutcome: results[0],
+                    payoff: results[1]
+                }
+            });
+            dialogRef.afterClosed().subscribe(results => {
+                this.clearBets();
+            });
         });
     }
     isNumber(n) {
@@ -539,7 +542,7 @@ class BoardComponent {
     }
 }
 BoardComponent.ɵfac = function BoardComponent_Factory(t) { return new (t || BoardComponent)(_angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵdirectiveInject"](_angular_material_dialog__WEBPACK_IMPORTED_MODULE_9__.MatDialog), _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵdirectiveInject"](_contract_service__WEBPACK_IMPORTED_MODULE_5__.ContractService)); };
-BoardComponent.ɵcmp = /*@__PURE__*/ _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵdefineComponent"]({ type: BoardComponent, selectors: [["app-board"]], features: [_angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵProvidersFeature"]([_contract_service__WEBPACK_IMPORTED_MODULE_5__.ContractService])], decls: 20, vars: 6, consts: [["cols", "5", "rowHeight", "45px", "gutterSize", "10"], ["class", "clickable-tile", 3, "colspan", "rowspan", "background", "click", 4, "ngFor", "ngForOf"], [1, "invisible-tile", 3, "colspan", "rowspan"], ["style", "width:30%;", 4, "ngIf"], ["mat-raised-button", "", 3, "click"], [1, "clickable-tile", 3, "colspan", "rowspan", "click"], [1, "cell-label"], [2, "width", "30%"], [3, "bets"]], template: function BoardComponent_Template(rf, ctx) { if (rf & 1) {
+BoardComponent.ɵcmp = /*@__PURE__*/ _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵdefineComponent"]({ type: BoardComponent, selectors: [["app-board"]], features: [_angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵProvidersFeature"]([_contract_service__WEBPACK_IMPORTED_MODULE_5__.ContractService])], decls: 24, vars: 8, consts: [["cols", "5", "rowHeight", "45px", "gutterSize", "10"], ["class", "clickable-tile", 3, "colspan", "rowspan", "background", "click", 4, "ngFor", "ngForOf"], [1, "invisible-tile", 3, "colspan", "rowspan"], ["style", "width:30%;", 4, "ngIf"], ["mat-raised-button", "", 3, "click"], [1, "clickable-tile", 3, "colspan", "rowspan", "click"], [1, "cell-label"], [2, "width", "30%"], [3, "bets"]], template: function BoardComponent_Template(rf, ctx) { if (rf & 1) {
         _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵelementStart"](0, "mat-grid-list", 0);
         _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵtemplate"](1, BoardComponent_mat_grid_tile_1_Template, 3, 5, "mat-grid-tile", 1);
         _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵelement"](2, "mat-grid-tile", 2);
@@ -561,10 +564,12 @@ BoardComponent.ɵcmp = /*@__PURE__*/ _angular_core__WEBPACK_IMPORTED_MODULE_7__[
         _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵtext"](15);
         _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵelement"](16, "br");
         _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵelement"](17, "br");
-        _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵelementStart"](18, "button", 4);
-        _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵlistener"]("click", function BoardComponent_Template_button_click_18_listener() { return ctx.testTransfer(); });
-        _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵtext"](19, "Transfer one MYT to 0x406204caa805B9563df03943bAD133E11fD32D67 ");
-        _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵelementEnd"]();
+        _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵtext"](18);
+        _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵelement"](19, "br");
+        _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵelement"](20, "br");
+        _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵtext"](21);
+        _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵelement"](22, "br");
+        _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵelement"](23, "br");
         _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵelementEnd"]();
     } if (rf & 2) {
         _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵadvance"](1);
@@ -577,6 +582,10 @@ BoardComponent.ɵcmp = /*@__PURE__*/ _angular_core__WEBPACK_IMPORTED_MODULE_7__[
         _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵproperty"]("ngIf", ctx.bets.length > 0);
         _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵadvance"](9);
         _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵtextInterpolate1"](" Account: ", ctx.userAddress, " ");
+        _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵadvance"](3);
+        _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵtextInterpolate1"](" DeCa Balance: ", ctx.tokenBalance, " ");
+        _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵadvance"](3);
+        _angular_core__WEBPACK_IMPORTED_MODULE_7__["ɵɵtextInterpolate1"](" Total DeCa supply: ", ctx.tokenTotalSupply, " ");
     } }, directives: [_angular_material_grid_list__WEBPACK_IMPORTED_MODULE_10__.MatGridList, _angular_common__WEBPACK_IMPORTED_MODULE_11__.NgForOf, _angular_material_grid_list__WEBPACK_IMPORTED_MODULE_10__.MatGridTile, _angular_common__WEBPACK_IMPORTED_MODULE_11__.NgIf, _angular_material_button__WEBPACK_IMPORTED_MODULE_12__.MatButton, _bet_table_bet_table_component__WEBPACK_IMPORTED_MODULE_6__.BetTableComponent], styles: [".mat-grid-tile[_ngcontent-%COMP%] {\n  background-color: #045c04;\n}\n\n.clickable-tile[_ngcontent-%COMP%] {\n  border: solid 1px white;\n  padding: 0px !important;\n  padding-top: 0px !important;\n  border-spacing: 0px;\n  vertical-align: top;\n  transition: all 0.2s ease-in-out;\n  box-shadow: 5px 10px 20px rgba(0, 0, 0, 0.5);\n  -webkit-user-select: none;\n          user-select: none;\n}\n\n.clickable-tile[_ngcontent-%COMP%]:hover {\n  transform: scale(1.05);\n  z-index: 1;\n  box-shadow: 10px 20px 20px rgba(0, 0, 0, 0.5);\n}\n\n.clickable-tile[_ngcontent-%COMP%]:active {\n  transform: scale(1.1);\n  transition: all 0.01s ease-in-out;\n  box-shadow: 15px 30px 20px rgba(0, 0, 0, 0.5);\n}\n\n.cell-label[_ngcontent-%COMP%] {\n  font-size: 2em !important;\n  color: #d4d4d4;\n  font-family: serif;\n}\n\n.invisible-tile[_ngcontent-%COMP%] {\n  border: none;\n  box-shadow: none;\n  background-color: #11ffee00;\n}\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbImJvYXJkLmNvbXBvbmVudC5zY3NzIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiJBQUFBO0VBQ0UseUJBQUE7QUFDRjs7QUFFQTtFQUNJLHVCQUFBO0VBQ0EsdUJBQUE7RUFDQSwyQkFBQTtFQUNBLG1CQUFBO0VBQ0EsbUJBQUE7RUFDQSxnQ0FBQTtFQUNBLDRDQUFBO0VBQ0EseUJBQUE7VUFBQSxpQkFBQTtBQUNKOztBQUVBO0VBQ0ksc0JBQUE7RUFDQSxVQUFBO0VBQ0EsNkNBQUE7QUFDSjs7QUFFRTtFQUNFLHFCQUFBO0VBQ0EsaUNBQUE7RUFDQSw2Q0FBQTtBQUNKOztBQUVFO0VBQ0UseUJBQUE7RUFDQSxjQUFBO0VBQ0Esa0JBQUE7QUFDSjs7QUFFQTtFQUNFLFlBQUE7RUFDQSxnQkFBQTtFQUNBLDJCQUFBO0FBQ0YiLCJmaWxlIjoiYm9hcmQuY29tcG9uZW50LnNjc3MiLCJzb3VyY2VzQ29udGVudCI6WyIubWF0LWdyaWQtdGlsZXtcclxuICBiYWNrZ3JvdW5kLWNvbG9yOiAgIzA0NWMwNDtcclxufVxyXG5cclxuLmNsaWNrYWJsZS10aWxlIHtcclxuICAgIGJvcmRlcjogc29saWQgMXB4IHdoaXRlO1xyXG4gICAgcGFkZGluZzowcHggIWltcG9ydGFudDtcclxuICAgIHBhZGRpbmctdG9wOjBweCAhaW1wb3J0YW50O1xyXG4gICAgYm9yZGVyLXNwYWNpbmc6MHB4O1xyXG4gICAgdmVydGljYWwtYWxpZ246IHRvcDtcclxuICAgIHRyYW5zaXRpb246IGFsbCAwLjJzIGVhc2UtaW4tb3V0O1xyXG4gICAgYm94LXNoYWRvdzogNXB4IDEwcHggMjBweCByZ2JhKDAsIDAsIDAsIDAuNSk7XHJcbiAgICB1c2VyLXNlbGVjdDogbm9uZVxyXG59XHJcblxyXG4uY2xpY2thYmxlLXRpbGU6aG92ZXIge1xyXG4gICAgdHJhbnNmb3JtOnNjYWxlKDEuMDUpO1xyXG4gICAgei1pbmRleDogMTtcclxuICAgIGJveC1zaGFkb3c6IDEwcHggMjBweCAyMHB4IHJnYmEoMCwgMCwgMCwgMC41KTtcclxuICB9XHJcbiAgXHJcbiAgLmNsaWNrYWJsZS10aWxlOmFjdGl2ZSB7XHJcbiAgICB0cmFuc2Zvcm06c2NhbGUoMS4xKTtcclxuICAgIHRyYW5zaXRpb246IGFsbCAwLjAxcyBlYXNlLWluLW91dDtcclxuICAgIGJveC1zaGFkb3c6IDE1cHggMzBweCAyMHB4IHJnYmEoMCwgMCwgMCwgMC41KTtcclxuICB9XHJcblxyXG4gIC5jZWxsLWxhYmVse1xyXG4gICAgZm9udC1zaXplOiAyZW0gIWltcG9ydGFudDtcclxuICAgIGNvbG9yOiByZ2IoMjEyLCAyMTIsIDIxMik7XHJcbiAgICBmb250LWZhbWlseTpzZXJpZjtcclxufVxyXG5cclxuLmludmlzaWJsZS10aWxle1xyXG4gIGJvcmRlcjogbm9uZTtcclxuICBib3gtc2hhZG93OiBub25lO1xyXG4gIGJhY2tncm91bmQtY29sb3I6ICAjMTFmZmVlMDA7XHJcbn0iXX0= */"] });
 
 
@@ -767,6 +776,39 @@ class Cell {
         }
         return (cellColor);
     }
+    adaptForContract() {
+        /*number, // 0
+        red, // 1
+        black, // 2
+        odd, // 3
+        even, // 4
+        range_1_18, // 5
+        range_19_36, // 6
+        range_1_12, // 7
+        range_13_24, // 8
+        range_25_36, // 9
+        column_1, // 10
+        column_2, // 11
+        column_3 // 12 */
+        if (this.key.length <= 2) {
+            return ([0, this.getNumber()]);
+        }
+        switch (this.key) {
+            case "Red": return ([1, 0]);
+            case "Black": return ([2, 0]);
+            case "Odd": return ([3, 0]);
+            case "Even": return ([4, 0]);
+            case "1-18": return ([5, 0]);
+            case "19-36": return ([6, 0]);
+            case "1-12": return ([7, 0]);
+            case "13-24": return ([8, 0]);
+            case "25-36": return ([9, 0]);
+            case "1st col": return ([10, 0]);
+            case "2nd col": return ([11, 0]);
+            case "3rd col": return ([12, 0]);
+        }
+        throw new Error('Invalid key: ' + this.key);
+    }
 }
 (function (Cell) {
     let Type;
@@ -806,8 +848,8 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
-const ABI = __webpack_require__(/*! ../../contract/abi.json */ 30907);
-const ADDRESS = "0xf0c40736B432AF63A05b01405eD64b58E263FCCC";
+const ABI = __webpack_require__(/*! ../../../contract/abi.json */ 68082);
+const ADDRESS = "0x7208d8B7a3baFa61c187D49F20660e2f12C426CE";
 class ContractService {
     constructor() {
         this.account = null;
@@ -835,9 +877,23 @@ class ContractService {
             return (this.account);
         });
     }
-    testTransfer() {
+    totalSupply() {
         return (0,tslib__WEBPACK_IMPORTED_MODULE_1__.__awaiter)(this, void 0, void 0, function* () {
-            this.contract.methods.transfer('0x406204caa805B9563df03943bAD133E11fD32D67', (Math.pow(10, 18)).toString()).send({ from: this.account });
+            yield this.connect();
+            let supply = yield this.contract.methods.totalSupply().call();
+            return (supply / Math.pow(10, 18));
+        });
+    }
+    balanceOf(address) {
+        return (0,tslib__WEBPACK_IMPORTED_MODULE_1__.__awaiter)(this, void 0, void 0, function* () {
+            yield this.connect();
+            let balance = yield this.contract.methods.balanceOf(address).call();
+            return (balance / Math.pow(10, 18));
+        });
+    }
+    spin(bets, spinOutcome) {
+        return (0,tslib__WEBPACK_IMPORTED_MODULE_1__.__awaiter)(this, void 0, void 0, function* () {
+            yield this.contract.methods.spin(bets, spinOutcome).send({ from: this.account });
         });
     }
 }
@@ -858,10 +914,15 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "Dealer": () => (/* binding */ Dealer)
 /* harmony export */ });
+/* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! tslib */ 3786);
+
 class Dealer {
-    spin() {
+    constructor(contractService) {
+        this.contractService = contractService;
+    }
+    simulateSpin() {
         let outcome = Math.ceil(Math.random() * 36);
-        console.info("outcome= " + outcome);
+        console.info("Simulated spin outcome= " + outcome);
         return outcome;
     }
     betPayoff(spinOutcome, bet) {
@@ -872,13 +933,27 @@ class Dealer {
             return (0);
         }
     }
-    pay(bets) {
-        let outcome = this.spin();
-        let totalPayoff = 0;
+    adaptBets(bets) {
+        let adaptedBets = [];
         for (let bet of bets) {
-            totalPayoff += this.betPayoff(outcome, bet);
+            let cellAdaptedForContract = bet.cell.adaptForContract();
+            adaptedBets.push({ betType: cellAdaptedForContract[0],
+                cellNumber: cellAdaptedForContract[1],
+                amount: bet.amount });
+            console.log("adaptBets: " + cellAdaptedForContract[0] + "; " + cellAdaptedForContract[1] + "; " + bet.amount);
         }
-        return ([outcome, totalPayoff]);
+        return (adaptedBets);
+    }
+    pay(bets) {
+        return (0,tslib__WEBPACK_IMPORTED_MODULE_0__.__awaiter)(this, void 0, void 0, function* () {
+            let outcome = this.simulateSpin();
+            let totalPayoff = 0;
+            for (let bet of bets) {
+                totalPayoff += this.betPayoff(outcome, bet);
+            }
+            yield this.contractService.spin(this.adaptBets(bets), outcome);
+            return ([outcome, totalPayoff]);
+        });
     }
 }
 
@@ -1055,14 +1130,14 @@ _angular_platform_browser__WEBPACK_IMPORTED_MODULE_3__.platformBrowser().bootstr
 
 /***/ }),
 
-/***/ 30907:
-/*!***************************!*\
-  !*** ./contract/abi.json ***!
-  \***************************/
+/***/ 68082:
+/*!****************************!*\
+  !*** ../contract/abi.json ***!
+  \****************************/
 /***/ ((module) => {
 
 "use strict";
-module.exports = JSON.parse('[{"inputs":[],"stateMutability":"nonpayable","type":"constructor"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"_owner","type":"address"},{"indexed":true,"internalType":"address","name":"_spender","type":"address"},{"indexed":false,"internalType":"uint256","name":"_value","type":"uint256"}],"name":"Approval","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"_from","type":"address"},{"indexed":true,"internalType":"address","name":"_to","type":"address"},{"indexed":false,"internalType":"uint256","name":"_value","type":"uint256"}],"name":"Transfer","type":"event"},{"inputs":[{"internalType":"address","name":"","type":"address"},{"internalType":"address","name":"","type":"address"}],"name":"allowance","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"_spender","type":"address"},{"internalType":"uint256","name":"_value","type":"uint256"}],"name":"approve","outputs":[{"internalType":"bool","name":"success","type":"bool"}],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"","type":"address"}],"name":"balanceOf","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"decimals","outputs":[{"internalType":"uint8","name":"","type":"uint8"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"name","outputs":[{"internalType":"string","name":"","type":"string"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"symbol","outputs":[{"internalType":"string","name":"","type":"string"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"totalSupply","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"_to","type":"address"},{"internalType":"uint256","name":"_value","type":"uint256"}],"name":"transfer","outputs":[{"internalType":"bool","name":"success","type":"bool"}],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"_from","type":"address"},{"internalType":"address","name":"_to","type":"address"},{"internalType":"uint256","name":"_value","type":"uint256"}],"name":"transferFrom","outputs":[{"internalType":"bool","name":"success","type":"bool"}],"stateMutability":"nonpayable","type":"function"}]');
+module.exports = JSON.parse('[{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"owner","type":"address"},{"indexed":true,"internalType":"address","name":"spender","type":"address"},{"indexed":false,"internalType":"uint256","name":"value","type":"uint256"}],"name":"Approval","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"uint8","name":"spinResult","type":"uint8"},{"indexed":false,"internalType":"int256","name":"netProfit","type":"int256"}],"name":"Payoff","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"from","type":"address"},{"indexed":true,"internalType":"address","name":"to","type":"address"},{"indexed":false,"internalType":"uint256","name":"value","type":"uint256"}],"name":"Transfer","type":"event"},{"inputs":[{"internalType":"address","name":"spender","type":"address"},{"internalType":"uint256","name":"amount","type":"uint256"}],"name":"approve","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"spender","type":"address"},{"internalType":"uint256","name":"subtractedValue","type":"uint256"}],"name":"decreaseAllowance","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"spender","type":"address"},{"internalType":"uint256","name":"addedValue","type":"uint256"}],"name":"increaseAllowance","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"components":[{"internalType":"enum DeCa.BetType","name":"betType","type":"uint8"},{"internalType":"uint8","name":"cellNumber","type":"uint8"},{"internalType":"uint256","name":"amount","type":"uint256"}],"internalType":"struct DeCa.Bet[]","name":"bets","type":"tuple[]"},{"internalType":"uint8","name":"spinResult","type":"uint8"}],"name":"spin","outputs":[{"internalType":"int256","name":"","type":"int256"}],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"recipient","type":"address"},{"internalType":"uint256","name":"amount","type":"uint256"}],"name":"transfer","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"sender","type":"address"},{"internalType":"address","name":"recipient","type":"address"},{"internalType":"uint256","name":"amount","type":"uint256"}],"name":"transferFrom","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"stateMutability":"nonpayable","type":"constructor"},{"inputs":[{"internalType":"address","name":"owner","type":"address"},{"internalType":"address","name":"spender","type":"address"}],"name":"allowance","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"account","type":"address"}],"name":"balanceOf","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"decimals","outputs":[{"internalType":"uint8","name":"","type":"uint8"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"name","outputs":[{"internalType":"string","name":"","type":"string"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"symbol","outputs":[{"internalType":"string","name":"","type":"string"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"totalSupply","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"}]');
 
 /***/ })
 

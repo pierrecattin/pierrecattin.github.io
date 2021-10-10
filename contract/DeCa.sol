@@ -11,28 +11,6 @@ contract DeCa is ERC20 {
         red
     }
 
-    uint8[18] redNumbers = [
-        1,
-        3,
-        5,
-        7,
-        9,
-        12,
-        14,
-        16,
-        18,
-        19,
-        21,
-        23,
-        25,
-        27,
-        30,
-        32,
-        34,
-        36
-    ];
-    mapping(uint8 => Color) numberColors;
-
     enum BetType {
         number, // 0
         red, // 1
@@ -55,6 +33,30 @@ contract DeCa is ERC20 {
         uint256 amount;
     }
 
+    uint8[18]  redNumbers = [
+            1,
+            3,
+            5,
+            7,
+            9,
+            12,
+            14,
+            16,
+            18,
+            19,
+            21,
+            23,
+            25,
+            27,
+            30,
+            32,
+            34,
+            36
+        ];
+    mapping(uint8 => Color) numberColors;
+
+    
+
     constructor() ERC20("DeCa", "DCA") {
         _mint(msg.sender, 1000000 * 10**decimals());
 
@@ -70,7 +72,7 @@ contract DeCa is ERC20 {
     function spin(
         Bet[] calldata bets,
         uint8 spinResult // TODO: replace by VRF
-    ) public returns (int256 netProfitOut) {
+    ) public returns (int256) {
         uint256 totalBetAmount = 0;
         for (uint256 betIx = 0; betIx < bets.length; betIx++) {
             totalBetAmount += bets[1].amount;
@@ -94,7 +96,7 @@ contract DeCa is ERC20 {
     function _computeBetPayoff(Bet calldata bet, uint8 spinResult)
         internal
         view
-        returns (uint256 payoffOut)
+        returns (uint256)
     {
         BetType betType = bet.betType;
         uint8 cellNumber = bet.cellNumber;

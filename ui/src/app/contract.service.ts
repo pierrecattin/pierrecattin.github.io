@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import Web3  from 'Web3';
-//import * as TruffleContract from 'truffle-contract';
+import { Bet } from './bet';
 
 declare let require: any;
 declare let window: any;
@@ -54,9 +54,9 @@ export class ContractService {
     return(balance / 10**18 );
   }
 
-  public async spin(spinOutcome:number){
-    let staticBets = [{betType:1, cellNumber:0, amount:1},{betType:0, cellNumber:1, amount:1}];
-    await this.contract.methods.spin(staticBets,spinOutcome).send({from:this.account});
+
+  public async spin(bets:any[], spinOutcome:number){
+    await this.contract.methods.spin(bets, spinOutcome).send({from:this.account});
   }
 
 }

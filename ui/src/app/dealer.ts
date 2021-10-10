@@ -23,13 +23,22 @@ export class Dealer {
         }
     }
 
+    public adaptBets(bets:Bet[]){
+        let amount1:number=bets[0].amount;
+        let adaptedBets = [];
+        for(let bet of bets){
+            adaptedBets.push({betType:1, cellNumber:0, amount:bet.amount});
+        }
+        return(adaptedBets);
+      }
+
     async pay(bets: Bet[]): Promise<[number, number]>{
         let outcome:number=this.simulateSpin();
         let totalPayoff: number=0;
         for(let bet of bets){
             totalPayoff+=this.betPayoff(outcome, bet);
         }
-        await this.contractService.spin(outcome);
+        await this.contractService.spin(this.adaptBets(bets), outcome);
         return([outcome, totalPayoff]);
     }
 }

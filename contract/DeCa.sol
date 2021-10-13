@@ -73,7 +73,7 @@ contract DeCa is ERC20 {
     ) public returns (int256) {
         uint256 totalBetAmount = 0;
         for (uint256 betIx = 0; betIx < bets.length; betIx++) {
-            totalBetAmount += bets[1].amount;
+            totalBetAmount += bets[betIx].amount;
         }
         uint256 senderBalance = balanceOf(msg.sender);
         require(

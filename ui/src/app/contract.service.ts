@@ -6,7 +6,7 @@ declare let require: any;
 declare let window: any;
 
 const ABI = require('../../../contract/abi.json');
-const ADDRESS = "0x7208d8B7a3baFa61c187D49F20660e2f12C426CE";
+const ADDRESS = "0x51431729850f6d16718314352CF51160666c4f37";
 
 @Injectable({
   providedIn: 'root'

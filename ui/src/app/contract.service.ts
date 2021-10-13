@@ -56,7 +56,8 @@ export class ContractService {
 
 
   public async spin(bets:any[], spinOutcome:number){
-    await this.contract.methods.spin(bets, spinOutcome).send({from:this.account});
+    let profit = await this.contract.methods.spin(bets, spinOutcome).send({from:this.account});
+    console.log("profit="+profit);
   }
 
 }

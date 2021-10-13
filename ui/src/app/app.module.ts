@@ -10,6 +10,8 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import {MatButtonModule}  from '@angular/material/button';
 import { FormsModule } from '@angular/forms';
 import { MatTableModule } from '@angular/material/table';
+import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
+
 import { AppComponent } from './app.component';
 import { BoardComponent } from './board/board.component';
 import { BetDialogComponent } from './bet-dialog/bet-dialog.component';
@@ -34,7 +36,8 @@ import { PayoffDialogComponent } from './payoff-dialog/payoff-dialog.component';
     MatButtonModule,
     MatInputModule,
     FormsModule,
-    MatTableModule
+    MatTableModule,
+    MatProgressSpinnerModule
   ],
   providers: [],
   bootstrap: [AppComponent]

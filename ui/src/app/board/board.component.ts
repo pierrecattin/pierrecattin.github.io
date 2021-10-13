@@ -19,7 +19,7 @@ export class BoardComponent implements OnInit {
   userAddress: any = null;
   tokenBalance: any = null;
   tokenTotalSupply: any = null;
-
+  loading:boolean = false;
 
   constructor(public dialog: MatDialog,
     private contractService: ContractService) {
@@ -93,6 +93,7 @@ export class BoardComponent implements OnInit {
   }
 
   async spin(): Promise<void> {
+    this.loading=true;
     let dealer: Dealer = new Dealer(this.contractService);
     let results: [number, number] = await dealer.pay(this.bets);
     const dialogRef = this.dialog.open(PayoffDialogComponent, {
@@ -104,6 +105,7 @@ export class BoardComponent implements OnInit {
     dialogRef.afterClosed().subscribe(results => {
       this.clearBets()
     });
+    this.loading=false;
   }
 
 

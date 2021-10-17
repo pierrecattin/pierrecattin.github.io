@@ -2,10 +2,13 @@
 pragma solidity ^0.8.2;
 
 import "@openzeppelin/contracts@4.3.2/token/ERC20/ERC20.sol";
+import "@chainlink/contracts/src/v0.8/VRFConsumerBase.sol";
 
-contract DeCa is ERC20 {
+contract DeCa is ERC20, VRFConsumerBase {
     event Payoff(uint8 spinResult, int256 netProfit);
+    event SpinCompleted(bytes32 requestId, uint8 spinResult);
 
+    // Roulette logic data
     enum Color {
         black,
         red
@@ -55,10 +58,29 @@ contract DeCa is ERC20 {
     ];
     mapping(uint8 => Color) numberColors;
 
-    constructor() ERC20("DeCa", "DCA") {
-        _mint(msg.sender, 1000000 * 10**decimals());
+    // Chainlink VRF data
+    bytes32 internal s_keyHash; // Chainlink VRF Kery Hash
+    uint256 private s_fee; // Chainlink VRF fee
 
-        numberColors[0] = Color.black; // not relevant: zero does not exist. We still assign so that indexes of numberColors correspond to cell numbers
+    // Store bets by request ID for availability in fulfillRandomness
+    mapping(bytes32 => Bet[]) requestBets;
+
+    // TODO: replace hardcoded VRF adresses and token parameters:
+    // contructor(name, symbol, initialSupply, address vrfCoordinator, address link, bytes32 keyHash, )
+    constructor()
+        ERC20("DeCa", "DCA")
+        VRFConsumerBase(
+            0x8C7382F9D8f56b33781fE506E897a4F1e2d17255,
+            0x326C977E6efc84E512bB9C30f76E30c160eD06FB
+        )
+    {
+        // VRF Coordinator; LINK Token
+        s_keyHash = 0x6e75b569a01ef56d18cab6a8e71e6600d6ce853834d4a5748b720d06f878b3a4; // TODO: s_keyHash =keyHash;
+        s_fee = 10**(18 - 4); // TODO: s_fee = fee;
+
+        _mint(msg.sender, 1000000 * 10**decimals()); //TODO: initialSupply
+
+        numberColors[0] = Color.black; // Index 0 not relevant: Cell 0 does not exist. We still assign so that indexes of numberColors correspond to cell numbers
         for (uint8 i = 1; i < 37; i++) {
             numberColors[i] = Color.black;
         }
@@ -67,20 +89,59 @@ contract DeCa is ERC20 {
         }
     }
 
-    function spin(
-        Bet[] calldata bets,
-        uint8 spinResult // TODO: replace by VRF
-    ) public returns (int256) {
+    function spin(Bet[] calldata bets) public {
+        require(
+            LINK.balanceOf(address(this)) >= s_fee,
+            "Not enough LINK to pay fee"
+        );
         uint256 totalBetAmount = 0;
         for (uint256 betIx = 0; betIx < bets.length; betIx++) {
             totalBetAmount += bets[betIx].amount;
         }
+        require(
+            totalBetAmount > 0,
+            "Total bet amount must be greater than zero"
+        );
+
         uint256 senderBalance = balanceOf(msg.sender);
         require(
             senderBalance >= totalBetAmount * 10**decimals(),
-            "betAmount exceeds balance of sender"
+            "Total bet amount  exceeds balance of sender"
         );
+        bytes32 requestId = getRandomNumber();
+        for (uint256 betIx = 0; betIx < bets.length; betIx++) {
+            requestBets[requestId].push(bets[betIx]);
+        }
+    }
 
+    function getRandomNumber() internal returns (bytes32) {
+        require(
+            LINK.balanceOf(address(this)) >= s_fee,
+            "Not enough LINK - fill contract with faucet"
+        );
+        bytes32 requestId = requestRandomness(s_keyHash, s_fee);
+        return (requestId);
+    }
+
+    /**
+     * Callback function used by VRF Coordinator
+     */
+    function fulfillRandomness(bytes32 requestId, uint256 randomness)
+        internal
+        override
+    {
+        uint8 spinResult = uint8((randomness % 36) + 1);
+        emit SpinCompleted(requestId, spinResult);
+
+        _pay(requestBets[requestId], spinResult);
+        delete (requestBets[requestId]);
+    }
+
+    function _pay(Bet[] memory bets, uint8 spinResult) internal {
+        uint256 totalBetAmount = 0;
+        for (uint256 betIx = 0; betIx < bets.length; betIx++) {
+            totalBetAmount += bets[betIx].amount;
+        }
         int256 netProfit = -int256(totalBetAmount);
         for (uint256 betIx = 0; betIx < bets.length; betIx++) {
             netProfit += int256(_computeBetPayoff(bets[betIx], spinResult));
@@ -88,10 +149,9 @@ contract DeCa is ERC20 {
 
         _settle(netProfit);
         emit Payoff(spinResult, netProfit);
-        return (netProfit);
     }
 
-    function _computeBetPayoff(Bet calldata bet, uint8 spinResult)
+    function _computeBetPayoff(Bet memory bet, uint8 spinResult)
         internal
         view
         returns (uint256)

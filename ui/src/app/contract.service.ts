@@ -6,7 +6,7 @@ declare let require: any;
 declare let window: any;
 
 const ABI = require('../../../contract/abi.json');
-const ADDRESS = "0x51431729850f6d16718314352CF51160666c4f37";
+const ADDRESS = "0x718a3a62fCa764eD76e07e5Df0ACC2506C56C1d2";
 
 @Injectable({
   providedIn: 'root'
@@ -55,9 +55,9 @@ export class ContractService {
   }
 
 
-  public async spin(bets:any[], spinOutcome:number){
-    let profit = await this.contract.methods.spin(bets, spinOutcome).send({from:this.account});
-    console.log("profit="+profit);
+  public async spin(bets:any[]){
+    let requestID = await this.contract.methods.spin(bets).send({from:this.account});
+    console.log(requestID);
   }
 
 }

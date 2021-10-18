@@ -1,12 +1,13 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.2;
+pragma solidity ^0.8.9;
 
 import "@openzeppelin/contracts@4.3.2/token/ERC20/ERC20.sol";
 import "@chainlink/contracts/src/v0.8/VRFConsumerBase.sol";
 
 contract DeCa is ERC20, VRFConsumerBase {
-    event Payoff(uint8 spinResult, int256 netProfit);
-    event SpinCompleted(bytes32 requestId, uint8 spinResult);
+    event Payoff(address player, uint8 spinResult, int256 netProfit);
+    event VRFRequested(address player, bytes32 requestId);
+    event SpinCompleted(address player, bytes32 requestId, uint8 spinResult);
 
     // Roulette logic data
     enum Color {
@@ -62,8 +63,11 @@ contract DeCa is ERC20, VRFConsumerBase {
     bytes32 internal s_keyHash; // Chainlink VRF Kery Hash
     uint256 private s_fee; // Chainlink VRF fee
 
-    // Store bets by request ID for availability in fulfillRandomness
+    // request ID -> bets by  for availability in fulfillRandomness
     mapping(bytes32 => Bet[]) requestBets;
+
+    // request ID -> player address
+    mapping(bytes32 => address) requestPlayer;
 
     // TODO: replace hardcoded VRF adresses and token parameters:
     // contructor(name, symbol, initialSupply, address vrfCoordinator, address link, bytes32 keyHash, )
@@ -89,7 +93,7 @@ contract DeCa is ERC20, VRFConsumerBase {
         }
     }
 
-    function spin(Bet[] calldata bets) public {
+    function spin(Bet[] calldata bets) public returns (bytes32) {
         require(
             LINK.balanceOf(address(this)) >= s_fee,
             "Not enough LINK to pay fee"
@@ -103,23 +107,26 @@ contract DeCa is ERC20, VRFConsumerBase {
             "Total bet amount must be greater than zero"
         );
 
-        uint256 senderBalance = balanceOf(msg.sender);
+        uint256 playerBalance = balanceOf(msg.sender);
         require(
-            senderBalance >= totalBetAmount * 10**decimals(),
-            "Total bet amount  exceeds balance of sender"
+            playerBalance >= totalBetAmount * 10**decimals(),
+            "Total bet amount exceeds balance of player"
         );
-        bytes32 requestId = getRandomNumber();
-        for (uint256 betIx = 0; betIx < bets.length; betIx++) {
+
+        bytes32 requestId = requestRandomness(s_keyHash, s_fee);
+        emit VRFRequested(msg.sender, requestId);
+        
+        // populate mappings required by fulfillRandomness
+        requestPlayer[requestId] = msg.sender;
+        for (
+            uint256 betIx = 0;
+            betIx < bets.length;
+            betIx++
+        ) 
+        {
             requestBets[requestId].push(bets[betIx]);
         }
-    }
 
-    function getRandomNumber() internal returns (bytes32) {
-        require(
-            LINK.balanceOf(address(this)) >= s_fee,
-            "Not enough LINK - fill contract with faucet"
-        );
-        bytes32 requestId = requestRandomness(s_keyHash, s_fee);
         return (requestId);
     }
 
@@ -130,25 +137,41 @@ contract DeCa is ERC20, VRFConsumerBase {
         internal
         override
     {
-        uint8 spinResult = uint8((randomness % 36) + 1);
-        emit SpinCompleted(requestId, spinResult);
+        uint8 spinResult = uint8((randomness % 36) + 1); // 1-36
+        address player = requestPlayer[requestId];
 
-        _pay(requestBets[requestId], spinResult);
+        emit SpinCompleted(player, requestId, spinResult);
+
+        _pay(player, requestBets[requestId], spinResult);
+
         delete (requestBets[requestId]);
+        delete (requestPlayer[requestId]);
     }
 
-    function _pay(Bet[] memory bets, uint8 spinResult) internal {
+    function _pay(
+        address player,
+        Bet[] memory bets,
+        uint8 spinResult
+    ) internal {
         uint256 totalBetAmount = 0;
         for (uint256 betIx = 0; betIx < bets.length; betIx++) {
             totalBetAmount += bets[betIx].amount;
         }
+
+        // Re-check balance because _pay() runs in different transaction from spin() -> transactions in the meatime could have changed balance
+        uint256 playerBalance = balanceOf(player);
+        require(
+            playerBalance >= totalBetAmount * 10**decimals(),
+            "Total bet amount exceeds balance of player"
+        );
+
         int256 netProfit = -int256(totalBetAmount);
         for (uint256 betIx = 0; betIx < bets.length; betIx++) {
             netProfit += int256(_computeBetPayoff(bets[betIx], spinResult));
         }
 
-        _settle(netProfit);
-        emit Payoff(spinResult, netProfit);
+        _settle(player, netProfit);
+        emit Payoff(player, spinResult, netProfit);
     }
 
     function _computeBetPayoff(Bet memory bet, uint8 spinResult)
@@ -201,11 +224,11 @@ contract DeCa is ERC20, VRFConsumerBase {
         return (payoff);
     }
 
-    function _settle(int256 netProfit) internal {
+    function _settle(address player, int256 netProfit) internal {
         if (netProfit < 0) {
-            _burn(msg.sender, uint256(-netProfit) * 10**decimals());
+            _burn(player, uint256(-netProfit) * 10**decimals());
         } else if (netProfit > 0) {
-            _mint(msg.sender, uint256(netProfit) * 10**decimals());
+            _mint(player, uint256(netProfit) * 10**decimals());
         }
     }
 }

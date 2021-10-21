@@ -5,9 +5,9 @@ import "@openzeppelin/contracts@4.3.2/token/ERC20/ERC20.sol";
 import "@chainlink/contracts/src/v0.8/VRFConsumerBase.sol";
 
 contract DeCa is ERC20, VRFConsumerBase {
-    event Payoff(address player, uint8 spinResult, int256 netProfit);
-    event VRFRequested(address player, bytes32 requestId);
-    event SpinCompleted(address player, bytes32 requestId, uint8 spinResult);
+    event Payoff(address indexed player, uint8 spinResult, int256 netProfit);
+    event VRFRequested(address indexed player, bytes32 indexed requestId);
+    event SpinCompleted(address indexed player, bytes32 indexed  requestId, uint8 spinResult);
 
     // Roulette logic data
     enum Color {

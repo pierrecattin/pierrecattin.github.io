@@ -36,14 +36,9 @@ export class Dealer {
         return(adaptedBets);
       }
 
-    async pay(bets: Bet[]){
-        //let outcome:number=this.simulateSpin();
-        //let totalPayoff: number=0;
-        //for(let bet of bets){
-        //    totalPayoff+=this.betPayoff(outcome, bet);
-        //}
-        await this.contractService.spin(this.adaptBets(bets));
-        //return([outcome, totalPayoff]);
+    async pay(bets: Bet[]): Promise<string>{
+        let receiptId:string = await this.contractService.spin(this.adaptBets(bets));
+        return(receiptId);
     }
 }
 

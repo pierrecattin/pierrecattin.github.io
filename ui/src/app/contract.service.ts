@@ -21,9 +21,10 @@ export class ContractService {
   }
 
   private async connect() {
+    //TODO: https://betterprogramming.pub/ethereum-dapps-how-to-load-the-blockchain-8756ca0fa0d1
     if (window.ethereum) {
-        await window.ethereum.send('eth_requestAccounts');
         window.web3 = new Web3(window.ethereum);
+        await window.ethereum.send('eth_requestAccounts');
 
         var accounts = await window.web3.eth.getAccounts();
         this.account = accounts[0];
@@ -55,9 +56,9 @@ export class ContractService {
   }
 
 
-  public async spin(bets:any[]){
-    let requestID = await this.contract.methods.spin(bets).send({from:this.account});
-    console.log(requestID);
+  public async spin(bets:any[]): Promise<string> {
+    const receipt = await this.contract.methods.spin(bets).send({from:this.account});
+    return(receipt.events.VRFRequested.returnValues.requestId);
   }
 
 }

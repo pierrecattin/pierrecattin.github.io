@@ -95,16 +95,15 @@ export class BoardComponent implements OnInit {
   async spin() {
     this.loading=true;
     let dealer: Dealer = new Dealer(this.contractService);
-   await dealer.pay(this.bets);
-    /*const dialogRef = this.dialog.open(PayoffDialogComponent, {
+   let receiptId:string = await dealer.pay(this.bets);
+  const dialogRef = this.dialog.open(PayoffDialogComponent, {
       data: {
-        spinOutcome: results[0],
-        payoff: results[1]
+        receiptId: receiptId
       }
     });
     dialogRef.afterClosed().subscribe(results => {
       this.clearBets()
-    });*/
+    });
     this.loading=false;
   }
 
